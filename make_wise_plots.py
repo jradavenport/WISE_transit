@@ -7,36 +7,46 @@ from astroquery.irsa import Irsa # had to install astroquery w/ pip
 matplotlib.rcParams.update({'font.size':18})
 matplotlib.rcParams.update({'font.family':'serif'})
 
+Irsa.ROW_LIMIT = 0
 
 # a list of targets that astroquery can resolve
 # need list of WISE targets within 47 arcmin of the Ecliptic Poles
 # Simbad defines the NEP = 18 00 00.000 +66 33 38.55
 #   SEP = 06 00 00.000 -66 33 38.55
-targets = ['WISE J175946.15+663746.7']
+targets = ['WISE J060224.34-661926.1']
 
-# the 2 WISE tables to search
-cats = ['neowiser_p1bs_psd', 'allwise_p3as_mep'] # can also use [allsky_2band_p1bs_psd,allsky_3band_p1bs_psd]
+# the WISE tables to search
+cats = ['neowiser_p1bs_psd', 'allsky_4band_p1bs_psd', 'allsky_3band_p1bs_psd', 'allsky_2band_p1bs_psd']
 
 for obj in targets:
-    print('Running '+ obj)
+    print('Running '+ str(obj))
 
-    table1 = Irsa.query_region(obj, catalog=cats[0], spatial='Cone', width='3 arcsec')
-    table2 = Irsa.query_region(obj, catalog=cats[1], spatial='Cone', width='3 arcsec')
+    table1 = Irsa.query_region(obj, catalog=cats[0], spatial='Cone', width='2 arcsec')
+    table2 = Irsa.query_region(obj, catalog=cats[1], spatial='Cone', width='2 arcsec')
+    table3 = Irsa.query_region(obj, catalog=cats[2], spatial='Cone', width='2 arcsec')
+    table4 = Irsa.query_region(obj, catalog=cats[3], spatial='Cone', width='2 arcsec')
 
     table1.sort('mjd')
     table2.sort('mjd')
+    table3.sort('mjd')
+    table4.sort('mjd')
 
     df1 = table1.to_pandas()
     df2 = table2.to_pandas()
+    df3 = table3.to_pandas()
+    df4 = table4.to_pandas()
 
-    print(' found '+str(len(df1))+' + '+ str(len(df2))+' visits')
+    print(' found '+str(len(df1))+' + '+ str(len(df2))+' + '+ str(len(df3))+' + '+ str(len(df4))+' visits')
 
     # dump to CSV files for possible later analysis
     df1.to_csv('data/' + obj + cats[0] + '.csv')
     df2.to_csv('data/' + obj + cats[1] + '.csv')
+    df3.to_csv('data/' + obj + cats[2] + '.csv')
+    df4.to_csv('data/' + obj + cats[3] + '.csv')
 
 
-    # ok1 = np.where()
+    #### NEED TO ADD QUALITY CUTS NOW!
+
 
     ## make 3 basic figures:
     # 1) W1 light curve
