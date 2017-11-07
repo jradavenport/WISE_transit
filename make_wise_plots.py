@@ -13,10 +13,15 @@ Irsa.ROW_LIMIT = 0
 # need list of WISE targets within 47 arcmin of the Ecliptic Poles
 # Simbad defines the NEP = 18 00 00.000 +66 33 38.55
 #   SEP = 06 00 00.000 -66 33 38.55
-targets = ['WISE J060224.34-661926.1', 'WISE J180214.15+661150.5', 'WISE J180022.32+663315.1',
-           'WISE J055625.16-662924.6', 'WISE J175946.15+663746.7', 'WISE J060051.07-664439.4',
-           'WISE J060113.59-662905.1', 'WISE J055552.81-662920.9', 'WISE J060105.40-663425.1',
-           'WISE J060132.35-660815.0', 'WISE J180201.72+663739.0']
+
+### Some random targets pulled up by hand
+# targets = ['WISE J060224.34-661926.1', 'WISE J180214.15+661150.5', 'WISE J180022.32+663315.1',
+#            'WISE J055625.16-662924.6', 'WISE J175946.15+663746.7', 'WISE J060051.07-664439.4',
+#            'WISE J060113.59-662905.1', 'WISE J055552.81-662920.9', 'WISE J060105.40-663425.1',
+#            'WISE J060132.35-660815.0', 'WISE J180201.72+663739.0']
+
+targets = ['WISE J060559.74-655908.2']
+
 
 # the WISE tables to search
 cats = ['neowiser_p1bs_psd', 'allsky_4band_p1bs_psd', 'allsky_3band_p1bs_psd', 'allsky_2band_p1bs_psd']
@@ -50,7 +55,7 @@ for obj in targets:
 
     #### NEED TO ADD QUALITY CUTS
     # can't add this to the latter 3 surveys...  (df1['qual_frame'] > 8)
-    ok1 = (df1['ph_qual'].str[0] == 'A') & (df1['nb'] == 1) & (df1['cc_flags'].str[0:2] == '00') & (df1['qual_frame'] > 8) & (df1['w1rchi2'] < 5)
+    ok1 = (df1['ph_qual'].str[0] == 'A') & (df1['nb'] == 1) & (df1['cc_flags'].str[0:2] == '00') & (df1['w1rchi2'] < 5) & (df1['qual_frame'] > 8)
     ok2 = (df2['ph_qual'].str[0] == 'A') & (df2['nb'] == 1) & (df2['cc_flags'].str[0:2] == '00') & (df2['w1rchi2'] < 5)
     ok3 = (df3['ph_qual'].str[0] == 'A') & (df3['nb'] == 1) & (df3['cc_flags'].str[0:2] == '00') & (df3['w1rchi2'] < 5)
     ok4 = (df4['ph_qual'].str[0] == 'A') & (df4['nb'] == 1) & (df4['cc_flags'].str[0:2] == '00') & (df4['w1rchi2'] < 5)
@@ -62,6 +67,11 @@ for obj in targets:
     ## make 3 basic figures:
     # 1) W1 light curve
     plt.figure(figsize=(13,8))
+    # plt.scatter(df1['mjd'], df1['w1mpro'], c='k', s=5, alpha=0.2)
+    # plt.scatter(df2['mjd'], df2['w1mpro'], c='k', s=5, alpha=0.2)
+    # plt.scatter(df3['mjd'], df3['w1mpro'], c='k', s=5, alpha=0.2)
+    # plt.scatter(df4['mjd'], df4['w1mpro'], c='k', s=5, alpha=0.2)
+
     plt.errorbar(df1['mjd'][ok1], df1['w1mpro'][ok1], yerr=df1['w1sigmpro'][ok1],
                  marker='o', linestyle='none', alpha=0.25, color=colors[0])
     plt.errorbar(df2['mjd'][ok2], df2['w1mpro'][ok2], yerr=df2['w1sigmpro'][ok2],
@@ -71,6 +81,7 @@ for obj in targets:
     plt.errorbar(df4['mjd'][ok4], df4['w1mpro'][ok4], yerr=df4['w1sigmpro'][ok4],
                  marker='o', linestyle='none', alpha=0.25, color=colors[3])
     plt.ylabel('W1 (mag)')
+    plt.xlabel('MJD (days)')
     plt.gca().invert_yaxis()
     plt.title(obj)
     plt.savefig('img/'+obj + '_W1.png', dpi=150, bbox_inches='tight', pad_inches=0.25)
