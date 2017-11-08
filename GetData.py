@@ -11,7 +11,7 @@ matplotlib.rcParams.update({'font.family':'serif'})
 Irsa.ROW_LIMIT = 0
 
 
-def WISE_LC(obj, alldata=False, interac=False):
+def WISE_LC(obj, alldata=False, interac=False, moreplots=False):
     # the WISE tables to search
     cats = ['neowiser_p1bs_psd', 'allsky_4band_p1bs_psd', 'allsky_3band_p1bs_psd', 'allsky_2band_p1bs_psd']
 
@@ -31,6 +31,7 @@ def WISE_LC(obj, alldata=False, interac=False):
     df4 = table4.to_pandas()
 
     # print(' found '+str(len(df1))+' + '+ str(len(df2))+' + '+ str(len(df3))+' + '+ str(len(df4))+' visits')
+    totvisits = len(df1) + len(df2) + len(df3) + len(df4)
 
     # dump to CSV files for possible later analysis
     if not os.path.exists('data'):
@@ -59,10 +60,10 @@ def WISE_LC(obj, alldata=False, interac=False):
     # 1) W1 light curve
     plt.figure(figsize=(13,8))
     if alldata:
-        plt.scatter(df1['mjd'], df1['w1mpro'], c='k', s=5, alpha=0.2)
-        plt.scatter(df2['mjd'], df2['w1mpro'], c='k', s=5, alpha=0.2)
-        plt.scatter(df3['mjd'], df3['w1mpro'], c='k', s=5, alpha=0.2)
-        plt.scatter(df4['mjd'], df4['w1mpro'], c='k', s=5, alpha=0.2)
+        plt.scatter(df1['mjd'], df1['w1mpro'], c='k', s=8, alpha=0.25)
+        plt.scatter(df2['mjd'], df2['w1mpro'], c='k', s=8, alpha=0.25)
+        plt.scatter(df3['mjd'], df3['w1mpro'], c='k', s=8, alpha=0.25)
+        plt.scatter(df4['mjd'], df4['w1mpro'], c='k', s=8, alpha=0.25)
 
     plt.errorbar(df1['mjd'][ok1], df1['w1mpro'][ok1], yerr=df1['w1sigmpro'][ok1],
                  marker='o', linestyle='none', alpha=0.25, color=colors[0])
@@ -72,10 +73,11 @@ def WISE_LC(obj, alldata=False, interac=False):
                  marker='o', linestyle='none', alpha=0.25, color=colors[2])
     plt.errorbar(df4['mjd'][ok4], df4['w1mpro'][ok4], yerr=df4['w1sigmpro'][ok4],
                  marker='o', linestyle='none', alpha=0.25, color=colors[3])
+
     plt.ylabel('W1 (mag)')
     plt.xlabel('MJD (days)')
     plt.gca().invert_yaxis()
-    plt.title(obj)
+    plt.title(obj + ', N=' + str(totvisits))
     plt.savefig('img/'+obj + '_W1.png', dpi=150, bbox_inches='tight', pad_inches=0.25)
     if interac:
         plt.show()
@@ -85,31 +87,32 @@ def WISE_LC(obj, alldata=False, interac=False):
 
 
     # 2) W1-W2 color light curve
-    plt.figure(figsize=(13,8))
-    if alldata:
-        plt.scatter(df1['mjd'], df1['w1mpro']-df1['w2mpro'], c='k', s=5, alpha=0.2)
-        plt.scatter(df2['mjd'], df2['w1mpro']-df2['w2mpro'], c='k', s=5, alpha=0.2)
-        plt.scatter(df3['mjd'], df3['w1mpro']-df3['w2mpro'], c='k', s=5, alpha=0.2)
-        plt.scatter(df4['mjd'], df4['w1mpro']-df4['w2mpro'], c='k', s=5, alpha=0.2)
+    if moreplots:
+        plt.figure(figsize=(13,8))
+        if alldata:
+            plt.scatter(df1['mjd'], df1['w1mpro']-df1['w2mpro'], c='k', s=8, alpha=0.25)
+            plt.scatter(df2['mjd'], df2['w1mpro']-df2['w2mpro'], c='k', s=8, alpha=0.25)
+            plt.scatter(df3['mjd'], df3['w1mpro']-df3['w2mpro'], c='k', s=8, alpha=0.25)
+            plt.scatter(df4['mjd'], df4['w1mpro']-df4['w2mpro'], c='k', s=8, alpha=0.25)
 
-    plt.errorbar(df1['mjd'][ok1], df1['w1mpro'][ok1] - df1['w2mpro'][ok1],
-                 yerr=np.sqrt(df1['w1sigmpro'][ok1]**2 + df1['w2sigmpro'][ok1]**2),
-                 marker='o', linestyle='none', alpha=0.25, color=colors[0])
-    plt.errorbar(df2['mjd'][ok2], df2['w1mpro'][ok2] - df2['w2mpro'][ok2],
-                 yerr=np.sqrt(df2['w1sigmpro'][ok2]**2 + df2['w2sigmpro'][ok2]**2),
-                 marker='o', linestyle='none', alpha=0.25, color=colors[1])
-    plt.errorbar(df3['mjd'][ok3], df3['w1mpro'][ok3] - df3['w2mpro'][ok3],
-                 yerr=np.sqrt(df3['w1sigmpro'][ok3]**2 + df3['w2sigmpro'][ok3]**2),
-                 marker='o', linestyle='none', alpha=0.25, color=colors[2])
-    plt.errorbar(df4['mjd'][ok4], df4['w1mpro'][ok4] - df4['w2mpro'][ok4],
-                 yerr=np.sqrt(df4['w1sigmpro'][ok4]**2 + df4['w2sigmpro'][ok4]**2),
-                 marker='o', linestyle='none', alpha=0.25, color=colors[3])
-    plt.xlabel('MJD (days)')
-    plt.ylabel('W1-W2 (mag)')
-    plt.title(obj)
-    plt.savefig('img/'+obj + '_W1W2.png', dpi=150, bbox_inches='tight', pad_inches=0.25)
-    # plt.show()
-    plt.close()
+        plt.errorbar(df1['mjd'][ok1], df1['w1mpro'][ok1] - df1['w2mpro'][ok1],
+                     yerr=np.sqrt(df1['w1sigmpro'][ok1]**2 + df1['w2sigmpro'][ok1]**2),
+                     marker='o', linestyle='none', alpha=0.25, color=colors[0])
+        plt.errorbar(df2['mjd'][ok2], df2['w1mpro'][ok2] - df2['w2mpro'][ok2],
+                     yerr=np.sqrt(df2['w1sigmpro'][ok2]**2 + df2['w2sigmpro'][ok2]**2),
+                     marker='o', linestyle='none', alpha=0.25, color=colors[1])
+        plt.errorbar(df3['mjd'][ok3], df3['w1mpro'][ok3] - df3['w2mpro'][ok3],
+                     yerr=np.sqrt(df3['w1sigmpro'][ok3]**2 + df3['w2sigmpro'][ok3]**2),
+                     marker='o', linestyle='none', alpha=0.25, color=colors[2])
+        plt.errorbar(df4['mjd'][ok4], df4['w1mpro'][ok4] - df4['w2mpro'][ok4],
+                     yerr=np.sqrt(df4['w1sigmpro'][ok4]**2 + df4['w2sigmpro'][ok4]**2),
+                     marker='o', linestyle='none', alpha=0.25, color=colors[3])
+        plt.xlabel('MJD (days)')
+        plt.ylabel('W1-W2 (mag)')
+        plt.title(obj + ', N=' + str(totvisits))
+        plt.savefig('img/'+obj + '_W1W2.png', dpi=150, bbox_inches='tight', pad_inches=0.25)
+        # plt.show()
+        plt.close()
 
 
 
