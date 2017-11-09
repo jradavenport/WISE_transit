@@ -37,6 +37,18 @@ def WISE_LC(obj, alldata=False, interac=False, moreplots=False):
     if not os.path.exists('data'):
         os.makedirs('data')
 
+    # manually fix the Python3 str=>bytestr problem... boo
+    df1['ph_qual'] = df1['ph_qual'].str.decode('ascii')
+    df2['ph_qual'] = df2['ph_qual'].str.decode('ascii')
+    df3['ph_qual'] = df3['ph_qual'].str.decode('ascii')
+    df4['ph_qual'] = df4['ph_qual'].str.decode('ascii')
+
+    df1['cc_flags'] = df1['cc_flags'].str.decode('ascii')
+    df2['cc_flags'] = df2['cc_flags'].str.decode('ascii')
+    df3['cc_flags'] = df3['cc_flags'].str.decode('ascii')
+    df4['cc_flags'] = df4['cc_flags'].str.decode('ascii')
+
+
     df1.to_csv('data/' + obj + cats[0] + '.csv')
     df2.to_csv('data/' + obj + cats[1] + '.csv')
     df3.to_csv('data/' + obj + cats[2] + '.csv')
