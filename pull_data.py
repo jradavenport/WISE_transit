@@ -2,6 +2,9 @@ from GetData import WISE_LC
 import pandas as pd
 import numpy as np
 import time
+'''
+run this code first, to pull the NEP and SEP light curves
+'''
 
 colnames = ['designation', 'ra', 'dec', 'sigra', 'sigdec', 'sigradec', 'glon', 'glat', 'elon', 'elat', 'wx', 'wy',
             'w1mpro', 'w1sigmpro', 'w1snr', 'w1rchi2', 'w2mpro', 'w2sigmpro', 'w2snr', 'w2rchi2',
@@ -45,3 +48,6 @@ for k in range(sum(okS)):
 
 print()
 print('> happy hunting')
+'''
+now run ethan_prep to re-format light curves into text files
+'''
