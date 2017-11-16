@@ -23,9 +23,10 @@ data = glob('data/*neowiser_p1bs_psd*')
 Nlimit = 9000
 
 for k in range(len(data)):
+    print(data[k])
     df4 = pd.read_csv(data[k])
 
-    ok4 = (df4['ph_qual'].str[0] == 'A') & (df4['nb'] == 1) & (df4['cc_flags'].str[0:2] == '00') & (df4['w1rchi2'] < 5)
+    ok4 = (df4['ph_qual'].str[0] == 'A') & (df4['nb'] == 1) & (df4['cc_flags'].astype('str').str[0] == '0') & (df4['w1rchi2'] < 5)
 
     if (sum(ok4) >= Nlimit):
         med_mag = np.nanmedian(df4['w1mpro'][ok4])
@@ -38,5 +39,5 @@ for k in range(len(data)):
         df_tmp.to_csv('lc/' + data[k][5:-4] + '.dat', columns=('time','flux','err'), index=False, sep=' ')
 
 
-print()
+print('')
 print('> package and send to Ethan')
