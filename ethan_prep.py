@@ -26,16 +26,16 @@ for k in range(len(data)):
     print(data[k])
     df4 = pd.read_csv(data[k])
 
-    ok4 = (df4['ph_qual'].str[0] == 'A') & (df4['nb'] == 1) & n(df4['cc_flags'].astype('str').str[0] == '0') & (df4['w1rchi2'] < 5)
+    ok4 = np.where((df4['ph_qual'].str[0] == 'A') & (df4['nb'] == 1) & (df4['cc_flags'].astype('str').str[0] == '0') & (df4['w1rchi2'] < 5)  & (df1['qual_frame'] > 8))[0]
 
     if (sum(ok4) >= Nlimit):
         med_mag = np.nanmedian(df4['w1mpro'][ok4])
-        w1flux = 10**((df4['w1mpro'][ok4] - med_mag) / (-2.5))
-        w1fluxerr = np.abs(df4['w1sigmpro'][ok4] * np.log(10) / (-2.5) * w1flux)
+        w1flux = 10**((df4['w1mpro'].values[ok4] - med_mag) / (-2.5))
+        w1fluxerr = np.abs(df4['w1sigmpro'].values[ok4] * np.log(10) / (-2.5) * w1flux)
 
-        tuniq, tu = np.unique(df4['mjd'][ok4], return_index=True)
+        tuniq, tu = np.unique(df4['mjd'].values[ok4], return_index=True)
         # write simple 3-col file for Ethan
-        df_tmp = pd.DataFrame(data={'time':df4['mjd'][ok4][tu], 'flux':w1flux[tu], 'err':w1fluxerr[tu]})
+        df_tmp = pd.DataFrame(data={'time':df4['mjd'].values[ok4][tu], 'flux':w1flux[tu], 'err':w1fluxerr[tu]})
 
         df_tmp.to_csv('lc/' + data[k][5:-4] + '.dat', columns=('time','flux','err'), index=False, sep=' ')
 

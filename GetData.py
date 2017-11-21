@@ -3,22 +3,24 @@ import matplotlib.pyplot as plt
 import matplotlib
 import os
 from astroquery.irsa import Irsa # had to install astroquery w/ pip
+import astropy.units as u
 # from astroquery.simbad import Simbad
 
 matplotlib.rcParams.update({'font.size':18})
 matplotlib.rcParams.update({'font.family':'serif'})
 
 Irsa.ROW_LIMIT = 0
+Irsa.TIMEOUT = 1000
 
 
 def WISE_LC(obj, alldata=False, interac=False, moreplots=False):
     # the WISE tables to search
     cats = ['neowiser_p1bs_psd', 'allsky_4band_p1bs_psd', 'allsky_3band_p1bs_psd', 'allsky_2band_p1bs_psd']
 
-    table1 = Irsa.query_region(obj, catalog=cats[0], spatial='Cone', radius='3 arcsec')
-    table2 = Irsa.query_region(obj, catalog=cats[1], spatial='Cone', radius='3 arcsec')
-    table3 = Irsa.query_region(obj, catalog=cats[2], spatial='Cone', radius='3 arcsec')
-    table4 = Irsa.query_region(obj, catalog=cats[3], spatial='Cone', radius='3 arcsec')
+    table1 = Irsa.query_region(obj, catalog=cats[0], spatial='Cone', radius=3 * u.arcsec)
+    table2 = Irsa.query_region(obj, catalog=cats[1], spatial='Cone', radius=3 * u.arcsec)
+    table3 = Irsa.query_region(obj, catalog=cats[2], spatial='Cone', radius=3 * u.arcsec)
+    table4 = Irsa.query_region(obj, catalog=cats[3], spatial='Cone', radius=3 * u.arcsec)
 
     table1.sort('mjd')
     table2.sort('mjd')
@@ -161,4 +163,4 @@ def WISE_LC(obj, alldata=False, interac=False, moreplots=False):
 
 if __name__ == "__main__":
     import sys
-    WISE_LC(str(sys.argv[1:]))
+    WISE_LC(str(sys.argv[1:]), interac=True, alldata=True)
