@@ -48,6 +48,4 @@ for k in range(sum(okS)):
 
 print()
 print('> happy hunting')
-'''
-now run ethan_prep to re-format light curves into text files
-'''
+print('  now run ethan_prep to re-format light curves into text files')

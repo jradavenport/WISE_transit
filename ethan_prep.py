@@ -1,4 +1,4 @@
-from GetData import WISE_LC
+# from GetData import WISE_LC
 import pandas as pd
 import numpy as np
 import os
@@ -20,22 +20,28 @@ if not os.path.exists('lc'):
 
 data = glob('data/*neowiser_p1bs_psd*')
 
-Nlimit = 9000
+Nlimit = 9000 # need at least this many visits to run
 
 for k in range(len(data)):
     print(data[k])
+    # only running the NeoWISE stuff Will use original WISE as verification for any candidate
     df4 = pd.read_csv(data[k])
-
-    ok4 = np.where((df4['ph_qual'].str[0] == 'A') & (df4['nb'] == 1) & (df4['cc_flags'].astype('str').str[0] == '0') & (df4['w1rchi2'] < 5)  & (df1['qual_frame'] > 8))[0]
+    ok4 = np.where((df4['ph_qual'].str[0] == 'A') & (df4['nb'] == 1) & (df4['cc_flags'].astype('str').str[0] == '0') & (df4['w1rchi2'] < 5)  & (df4['qual_frame'] > 8))[0]
 
     if (sum(ok4) >= Nlimit):
         med_mag = np.nanmedian(df4['w1mpro'][ok4])
         w1flux = 10**((df4['w1mpro'].values[ok4] - med_mag) / (-2.5))
         w1fluxerr = np.abs(df4['w1sigmpro'].values[ok4] * np.log(10) / (-2.5) * w1flux)
 
-        tuniq, tu = np.unique(df4['mjd'].values[ok4], return_index=True)
+        # fix the multiple exposures within a few seconds problem...
+        # this is *probably* due to a cosmic ray being cleaned out, and a second epoch being generated
+        # it SHOULD be correctable via flag cuts, BUT astroquery won't allow you to use all the flags...
+        # SO, executive decision for now: just pick the *latter epoch* when this occurs
+        dtime = df4['mjd'].values[ok4][:-1] - df4['mjd'].values[ok4][1:]
+        tok = np.where(( dtime*24.*60. < -45  ))
+
         # write simple 3-col file for Ethan
-        df_tmp = pd.DataFrame(data={'time':df4['mjd'].values[ok4][tu], 'flux':w1flux[tu], 'err':w1fluxerr[tu]})
+        df_tmp = pd.DataFrame(data={'time':df4['mjd'].values[ok4][tok], 'flux':w1flux[tok], 'err':w1fluxerr[tok]})
 
         df_tmp.to_csv('lc/' + data[k][5:-4] + '.dat', columns=('time','flux','err'), index=False, sep=' ')
 
