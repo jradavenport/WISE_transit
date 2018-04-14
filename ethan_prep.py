@@ -26,7 +26,8 @@ for k in range(len(data)):
     print(data[k])
     # only running the NeoWISE stuff Will use original WISE as verification for any candidate
     df4 = pd.read_csv(data[k])
-    ok4 = np.where((df4['ph_qual'].str[0] == 'A') & (df4['nb'] == 1) & (df4['cc_flags'].astype('str').str[0] == '0') & (df4['w1rchi2'] < 5)  & (df4['qual_frame'] > 8))[0]
+    ok4 = np.where((df4['ph_qual'].str[0] == 'A') & (df4['nb'] == 1) &
+                   (df4['cc_flags'].astype('str').str[0] == '0') & (df4['w1rchi2'] < 5)  & (df4['qual_frame'] > 8))[0]
 
     if (sum(ok4) >= Nlimit):
         med_mag = np.nanmedian(df4['w1mpro'][ok4])
