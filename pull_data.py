@@ -1,9 +1,16 @@
 from GetData import WISE_LC
+from ethan_prep import ethan_prep
 import pandas as pd
 import numpy as np
 import time
 '''
-run this code first, to pull the NEP and SEP light curves
+THIS IS THE SCRIPT TO RUN TO GET DATA FOR ANALYSIS
+
+from the NEP/SEP zones already defined:
+ - make basic object slections
+ - pull the WISE light curves
+ - clean light curves and repackage as CSV files
+
 '''
 
 colnames = ['designation', 'ra', 'dec', 'sigra', 'sigdec', 'sigradec', 'glon', 'glat', 'elon', 'elat', 'wx', 'wy',
@@ -47,5 +54,9 @@ for k in range(sum(okS)):
     time.sleep(2) # put a 2second sleep in, to try and not anger the sys-admins
 
 print()
-print('> happy hunting')
-print('  now run ethan_prep to re-format light curves into text files')
+print('> data has been downloaded, basic figures created.')
+print('  now running ethan_prep to re-format light curves into text files')
+
+ethan_prep()
+print('')
+print('> CSV files created. Now package (ZIP up) and send to Ethan!')
