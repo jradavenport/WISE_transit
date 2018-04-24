@@ -35,11 +35,10 @@ okS = ((SEP['w1mpro'] < 14.5) & (SEP['w1mpro'] > 7.8) & (SEP['dist'] <= 23.5*60)
        (SEP['j_m_2mass'] - SEP['w1mpro'] < 1.2) & (SEP['j_m_2mass'] - SEP['w1mpro'] > 0.75) &
        (SEP['w1mpro'] - SEP['w2mpro'] > -0.03))
 
-# print(sum(okN), sum(okS))
 
 # PULL NORTH DATA
 print('> getting data for ' + str(sum(okN)) + ' NEP sources')
-for k in range(sum(okN)):
+for k in range(0, sum(okN)):
     print(k, 'WISE ' + NEP['designation'][okN].values[k])
     WISE_LC('WISE ' + NEP['designation'][okN].values[k])
     time.sleep(2) # put a 2second sleep in, to try and not anger the sys-admins
@@ -48,7 +47,7 @@ print()
 
 # PULL SOUTH DATA
 print('> getting data for ' + str(sum(okS)) + ' SEP sources')
-for k in range(sum(okS)):
+for k in range(0, sum(okS)):
     print(k,' WISE ' + SEP['designation'][okS].values[k])
     WISE_LC('WISE ' + SEP['designation'][okS].values[k])
     time.sleep(2) # put a 2second sleep in, to try and not anger the sys-admins

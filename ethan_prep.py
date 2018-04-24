@@ -35,6 +35,9 @@ def ethan_prep(Nlimit = 9000, tfix=45):
             dtime = df4['mjd'].values[ok4][:-1] - df4['mjd'].values[ok4][1:]
             tok = np.where(( dtime*24.*60. < (-1*tfix)  ))
 
+            ## If i can remember which column i need, maybe this a way to get ALL columns?
+            ## http://docs.astropy.org/en/latest/api/astropy.config.ConfigNamespace.html#astropy.config.ConfigNamespace
+
             # write simple 3-col file for Ethan
             df_tmp = pd.DataFrame(data={'time':df4['mjd'].values[ok4][tok], 'flux':w1flux[tok], 'err':w1fluxerr[tok]})
 
